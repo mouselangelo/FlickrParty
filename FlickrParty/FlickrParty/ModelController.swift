@@ -34,9 +34,15 @@ class ModelController : NSObject {
                 for item in result {
                     print(item.title)
                 }
+                self.images.appendContentsOf(result)
+                print(self.images.count)
                 block(images: result, error: nil)
             }
         }
+    }
+    
+    func getImages() -> [ImageDetail] {
+        return images
     }
     
     
