@@ -10,7 +10,7 @@ import Foundation
 
 class FlickrAPIService : NSObject {
     
-    private let applicationKey = "c9310f15478b2643a293d2ae60d38a98"
+    private let applicationKey = "USE_YOUR_OWN_API_KEY_HERE"
     
     private let apiEndpoint = "https://api.flickr.com/services/rest/"
     private let searchMethod = "flickr.photos.search"
