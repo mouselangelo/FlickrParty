@@ -24,7 +24,7 @@ class DetailViewController: UIViewController, UIScrollViewDelegate {
     private func initView() {
         self.view.backgroundColor = UIColor.blackColor()
         self.title = item.title
-
+        
         
         initScrollView()
         
@@ -61,17 +61,18 @@ class DetailViewController: UIViewController, UIScrollViewDelegate {
         self.scrollView.addSubview(imageView!)
         
         if let url = NSURL(string: item!.fullImageURL) {
-            if let data = NSData(contentsOfURL: url) {
-                if let image = UIImage(data: data) {
-                    self.imageView?.image = image
-                    self.scrollView.contentSize = image.size
+            self.imageView?.sd_setImageWithURL(url)  {
+                (image:UIImage!, error:NSError!, cacheType:SDImageCacheType, url:NSURL!) in
+                
+                if let image = image {
                     self.imageView?.sizeToFit()
+                    self.scrollView.contentSize = image.size
                     self.autoFitImage()
                 }
             }
         }
     }
-
+    
     
     func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
         return imageView

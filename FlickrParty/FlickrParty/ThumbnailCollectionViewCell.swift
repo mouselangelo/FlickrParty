@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ThumbnailCollectionViewCell: UICollectionViewCell {
     
     
@@ -46,23 +47,10 @@ class ThumbnailCollectionViewCell: UICollectionViewCell {
         self.addConstraints([leftConstraint, rightConstraint, topConstraint, bottomConstraint])
     }
     
-    var thumbnail:UIImage? {
-        set {
-            self.imageView?.image = newValue
-        }
-        get {
-            return self.imageView?.image
-        }
-    }
-    
     func setThumbnailFromURL(thumbnailURL:String) {
-        let url = NSURL(string: thumbnailURL)
-        if let data = NSData(contentsOfURL: url!) {
-            self.thumbnail = UIImage(data: data)            
+        if let url = NSURL(string: thumbnailURL) {
+            self.imageView?.sd_setImageWithURL(url)
         }
-    }
-    
-    
-    
+    }    
     
 }

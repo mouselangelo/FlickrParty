@@ -161,6 +161,10 @@ extension MainViewController : UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
+        if indexPath.item > model.images.count - 30 {
+            self.fetchMore()
+        }
+        
         if indexPath.item < model.images.count {
             let item = model.images[indexPath.item]
             
@@ -171,7 +175,7 @@ extension MainViewController : UICollectionViewDataSource {
             return cell
             
         }
-        self.fetchMore()
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(LoadMoreCollectionViewCell.reuseIdentifier, forIndexPath: indexPath)
         return cell
     }
