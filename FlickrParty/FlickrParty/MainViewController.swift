@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, UIAlertViewDelegate {
     
     var collectionView:UICollectionView!
     var emptyView:UILabel?
@@ -18,11 +18,13 @@ class MainViewController: UIViewController {
     
     var gridSize:CGSize!
     var loadMoreSize: CGSize!
+    
+    private var showRefreshView = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initView()
-        self.loadData()
+        self.loadData(false)
     }
     
     override func viewWillLayoutSubviews() {
@@ -49,24 +51,71 @@ class MainViewController: UIViewController {
         self.view.backgroundColor = UIColor.lightGrayColor()
         self.title = "Flickr Party"
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
-        
         initCollectionView()
     }
     
-    private func loadData() {
+    private func loadData(retry:Bool) {
+
+        if self.showRefreshView && !retry {
+            return
+        }
+        
+        if showRefreshView && retry {
+            showRefreshView = false
+            let path = NSIndexPath(forItem: model.images.count, inSection: 0)
+            self.collectionView.reloadItemsAtIndexPaths([path])
+        }
+
+        
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        model.loadData { (images, error) in
-            NSOperationQueue.mainQueue().addOperationWithBlock({ 
+        
+        model.loadData(retry) { (images, error) in
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock({
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
             if error == nil {
+                self.showRefreshView = false
                 NSOperationQueue.mainQueue().addOperationWithBlock({
                     self.updateView()
                 })
             } else {
-                // display error?
+                NSOperationQueue.mainQueue().addOperationWithBlock({ 
+                    self.showRefreshView = true
+                    self.collectionView.reloadItemsAtIndexPaths(self.collectionView.indexPathsForVisibleItems())
+                    switch error! {
+                    case .Other(let message):
+                        print("Error : \(message)")
+                        self.showAlert("Service Unavailable", message: message)
+                    default:
+                        print("No network...")
+                        self.showAlert("No Network", message: "Looks like you are not connected to the Internet. Please reconnect and try again!")
+                    }
+                })
             }
+        }
+    }
+    
+    private func showAlert(title:String, message:String) {
+        if #available(iOS 8.0, *) {
+            let alertVC = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+            
+            alertVC.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+            
+            alertVC.addAction(UIAlertAction(title: "Retry", style: .Default, handler: { (action) in
+                    self.loadData(true)
+            }))
+            self.presentViewController(alertVC, animated: true, completion: nil)
+        } else {
+            let alert = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Retry")
+            alert.show()
+        }
+    }
+    
+    func alertView(alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int) {
+        if buttonIndex == 1 {
+            self.loadData(true)
         }
     }
     
@@ -74,11 +123,9 @@ class MainViewController: UIViewController {
         self.collectionView.reloadData()
         if model.images.count == 0 && !model.hasMore {
             // show empty view
-            print("show empty view")
             self.addEmptyView()
         } else {
             // hide empty view
-            print("hide empty view")
             self.removeEmptyView()
         }
     }
@@ -99,7 +146,6 @@ class MainViewController: UIViewController {
         self.emptyViewContraints = [horizontalCenter, verticalCenter]
         
         self.view.addConstraints(self.emptyViewContraints!)
-        
         
     }
     
@@ -130,6 +176,8 @@ class MainViewController: UIViewController {
         
         collectionView.registerClass(LoadMoreCollectionViewCell.self, forCellWithReuseIdentifier: LoadMoreCollectionViewCell.reuseIdentifier)
         
+         collectionView.registerClass(RefreshCollectionViewCell.self, forCellWithReuseIdentifier: RefreshCollectionViewCell.reuseIdentifier)
+        
         self.view.addSubview(collectionView)
         
         let leftConstraint = NSLayoutConstraint(item: self.view, attribute: .Left, relatedBy: .Equal, toItem: collectionView, attribute: .Left, multiplier: 1, constant: 0)
@@ -146,7 +194,7 @@ class MainViewController: UIViewController {
     
     private func fetchMore() {
         print("fetch more items...")
-        loadData()
+        loadData(false)
     }
   
 }
@@ -161,7 +209,7 @@ extension MainViewController : UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        if indexPath.item > model.images.count - 30 {
+        if indexPath.item == model.images.count - 12 {
             self.fetchMore()
         }
         
@@ -176,18 +224,29 @@ extension MainViewController : UICollectionViewDataSource {
             
         }
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(LoadMoreCollectionViewCell.reuseIdentifier, forIndexPath: indexPath)
-        return cell
+        if self.showRefreshView {
+              let cell = collectionView.dequeueReusableCellWithReuseIdentifier(RefreshCollectionViewCell.reuseIdentifier, forIndexPath: indexPath)
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier(LoadMoreCollectionViewCell.reuseIdentifier, forIndexPath: indexPath)
+            return cell
+        }
     }
 }
 
 extension MainViewController : UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let item = model.images[indexPath.item]
-        let detailViewController = DetailViewController()
-        detailViewController.item = item
-        self.navigationController?.pushViewController(detailViewController, animated: true)
+        if indexPath.item < model.images.count {
+            let item = model.images[indexPath.item]
+            let detailViewController = DetailViewController()
+            detailViewController.item = item
+            self.navigationController?.pushViewController(detailViewController, animated: true)
+        } else {
+            if self.showRefreshView {
+                self.loadData(true)
+            }
+        }
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {

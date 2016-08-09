@@ -12,7 +12,8 @@ class LoadMoreCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "LoadMoreCell"
     
-    private var activityIndicator:UIActivityIndicatorView!
+     var activityIndicator:UIActivityIndicatorView!
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)

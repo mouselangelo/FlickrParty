@@ -35,6 +35,9 @@
 		6144D4C21D5A0DB300DAA9B7 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6144D4B01D5A0DB300DAA9B7 /* UIImageView+HighlightedWebCache.m */; };
 		6144D4C31D5A0DB300DAA9B7 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6144D4B21D5A0DB300DAA9B7 /* UIImageView+WebCache.m */; };
 		6144D4C41D5A0DB300DAA9B7 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6144D4B41D5A0DB300DAA9B7 /* UIView+WebCacheOperation.m */; };
+		6144D4C71D5A17AD00DAA9B7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6144D4C61D5A17AD00DAA9B7 /* SystemConfiguration.framework */; };
+		6144D4C91D5A1A2D00DAA9B7 /* ModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6144D4C81D5A1A2D00DAA9B7 /* ModelError.swift */; };
+		6144D4CB1D5A284100DAA9B7 /* RefreshCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6144D4CA1D5A284100DAA9B7 /* RefreshCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +110,9 @@
 		6144D4B31D5A0DB300DAA9B7 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		6144D4B41D5A0DB300DAA9B7 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		6144D4C51D5A0E0300DAA9B7 /* FlickrParty-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FlickrParty-Bridging-Header.h"; sourceTree = "<group>"; };
+		6144D4C61D5A17AD00DAA9B7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		6144D4C81D5A1A2D00DAA9B7 /* ModelError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelError.swift; sourceTree = "<group>"; };
+		6144D4CA1D5A284100DAA9B7 /* RefreshCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6144D4C71D5A17AD00DAA9B7 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +144,7 @@
 		6144D4361D5368AE00DAA9B7 = {
 			isa = PBXGroup;
 			children = (
+				6144D4C61D5A17AD00DAA9B7 /* SystemConfiguration.framework */,
 				6144D4C51D5A0E0300DAA9B7 /* FlickrParty-Bridging-Header.h */,
 				6144D48F1D59E97500DAA9B7 /* Default-568h@2x.png */,
 				6144D4411D5368AE00DAA9B7 /* FlickrParty */,
@@ -203,6 +211,7 @@
 				6144D4831D5384DD00DAA9B7 /* flickr */,
 				6144D47E1D537C5700DAA9B7 /* ModelController.swift */,
 				6144D4811D537CA900DAA9B7 /* ImageDetail.swift */,
+				6144D4C81D5A1A2D00DAA9B7 /* ModelError.swift */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -220,6 +229,7 @@
 			children = (
 				6144D4881D53B8C500DAA9B7 /* ThumbnailCollectionViewCell.swift */,
 				6144D4911D59ED3300DAA9B7 /* LoadMoreCollectionViewCell.swift */,
+				6144D4CA1D5A284100DAA9B7 /* RefreshCollectionViewCell.swift */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -402,6 +412,7 @@
 				6144D4C11D5A0DB300DAA9B7 /* UIImage+WebP.m in Sources */,
 				6144D4741D536C6200DAA9B7 /* DetailViewController.swift in Sources */,
 				6144D4C21D5A0DB300DAA9B7 /* UIImageView+HighlightedWebCache.m in Sources */,
+				6144D4CB1D5A284100DAA9B7 /* RefreshCollectionViewCell.swift in Sources */,
 				6144D4891D53B8C500DAA9B7 /* ThumbnailCollectionViewCell.swift in Sources */,
 				6144D4921D59ED3300DAA9B7 /* LoadMoreCollectionViewCell.swift in Sources */,
 				6144D4BE1D5A0DB300DAA9B7 /* UIButton+WebCache.m in Sources */,
@@ -411,6 +422,7 @@
 				6144D4431D5368AE00DAA9B7 /* AppDelegate.swift in Sources */,
 				6144D4C01D5A0DB300DAA9B7 /* UIImage+MultiFormat.m in Sources */,
 				6144D4711D536B1900DAA9B7 /* MainViewController.swift in Sources */,
+				6144D4C91D5A1A2D00DAA9B7 /* ModelError.swift in Sources */,
 				6144D4B71D5A0DB300DAA9B7 /* SDImageCache.m in Sources */,
 				6144D4821D537CA900DAA9B7 /* ImageDetail.swift in Sources */,
 				6144D4851D5384ED00DAA9B7 /* FlickrAPIService.swift in Sources */,
