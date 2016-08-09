@@ -17,15 +17,16 @@ class FlickrAPIService : NSObject {
     private let defaultMediaType = "photos"
     private let defaultFormat = "json"
     
-    private let defaultPageSize = 30
+    private let defaultPageSize = 36
 
-    func search(keyword:String, handler:(result:[ImageDetail]?, error:String?) -> Void) {
+    func search(keyword:String, pageNumber:Int, handler:(result:[ImageDetail]?, totalImages:Int?, error:String?) -> Void) {
         
         var params = [String:String]()
         
         params[QueryParams.Tags.rawValue] = keyword
         params[QueryParams.PageSize.rawValue] = String(defaultPageSize)
         params[QueryParams.MediaType.rawValue] = defaultMediaType
+        params[QueryParams.PageNumber.rawValue] = String(pageNumber)
         
         // JSON Format
         params[QueryParams.ResponseFormat.rawValue] = defaultFormat
@@ -45,16 +46,16 @@ class FlickrAPIService : NSObject {
         sendRequest(url) {  (data, response, error) in
             if let error = error {
                 print(error.localizedDescription)
-                handler(result: nil, error: error.localizedDescription)
+                handler(result: nil, totalImages: 0, error: error.localizedDescription)
             } else if let httpResponse = response as? NSHTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     if let data = data {
                         self.parseResponse(data, handler: handler)
                     } else {
-                        handler(result: nil, error: "Unknown Error")
+                        handler(result: nil, totalImages: nil, error: "Unknown Error")
                     }
                 } else {
-                    handler(result: nil, error: "API service failed to return data")
+                    handler(result: nil, totalImages: nil,  error: "API service failed to return data")
                 }
             } else{
                 fatalError("Not a Http Response?")
@@ -62,10 +63,18 @@ class FlickrAPIService : NSObject {
         }
     }
     
-    private func parseResponse(data:NSData, handler:(result:[ImageDetail]?, error:String?) -> Void) {
+    private func parseResponse(data:NSData, handler:(result:[ImageDetail]?, totalImages:Int?, error:String?) -> Void) {
         do {
             if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.init(rawValue: 0)) as? [String:AnyObject] {
                 if let result = jsonResponse["photos"] as? [String:AnyObject] {
+                    
+                    var resultTotalCount = 0
+                    
+                    if let total = result["total"] as? String {
+                        resultTotalCount = Int(total) ?? 0
+                        print("Total Results \(resultTotalCount)")
+                    }
+                    
                     if let array = result["photo"] {
                         
                         var imageResult = [ImageDetail]()
@@ -89,7 +98,7 @@ class FlickrAPIService : NSObject {
                             }
                         }
                         
-                        handler(result: imageResult, error: nil)
+                        handler(result: imageResult, totalImages: resultTotalCount, error: nil)
                     }
                     
                 }

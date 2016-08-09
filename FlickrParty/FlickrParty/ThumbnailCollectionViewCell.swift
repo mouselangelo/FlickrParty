@@ -11,6 +11,8 @@ import UIKit
 class ThumbnailCollectionViewCell: UICollectionViewCell {
     
     
+    static let reuseIdentifier = "ThumbnailCell"
+    
     private var imageView:UIImageView!
     
     override init(frame: CGRect) {
@@ -24,6 +26,7 @@ class ThumbnailCollectionViewCell: UICollectionViewCell {
     }
     
     private func baseInit() {
+        self.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.25)
         imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
